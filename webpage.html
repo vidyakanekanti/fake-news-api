@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Detector</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        textarea { width: 80%; height: 100px; padding: 10px; margin-bottom: 10px; }
+        button { padding: 10px 20px; background-color: blue; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: darkblue; }
+        #output { margin-top: 20px; font-size: 18px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>Fake News Detector</h2>
+    <textarea id="newsText" placeholder="Enter news text here..."></textarea><br>
+    <button onclick="predictNews()">Check News</button>
+    <p id="output"></p>
+
+    <script>
+        function predictNews() {
+            let newsText = document.getElementById("newsText").value;
+
+            if (!newsText.trim()) {
+                document.getElementById("output").innerText = "Please enter some text!";
+                return;
+            }
+
+            fetch("http://127.0.0.1:5000/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: newsText }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Prediction:", data.prediction);  // Debugging
+                document.getElementById("output").innerText = "Prediction: " + data.prediction;
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                document.getElementById("output").innerText = "Error in prediction!";
+            });
+        }
+    </script>
+
+</body>
+</html>
